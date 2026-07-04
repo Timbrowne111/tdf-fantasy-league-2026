@@ -1,14 +1,8 @@
 name: Dagelijkse Tour de France Fantasy scrape
 
 on:
-  # Draait elke dag om 20:30 CEST (= 18:30 UTC) tijdens de Tour de France 2026
-  # (4 t/m 26 juli). CEST = UTC+2 in de zomer, dus 18:30 UTC = 20:30 lokale tijd.
-  # Dit geeft ruim 3-4 uur buffer na de finish voordat de site is bijgewerkt.
   schedule:
     - cron: "30 18 4-26 7 *"
-
-  # Handmatig te starten via de "Actions" tab op GitHub, handig om te testen
-  # of om een gemiste dag alsnog in te halen.
   workflow_dispatch: {}
 
 permissions:
@@ -29,7 +23,7 @@ jobs:
       - name: Dependencies installeren
         run: pip install -r requirements.txt
 
-        - name: Playwright browser installeren
+      - name: Playwright browser installeren
         run: playwright install --with-deps chromium
 
       - name: Scrape uitvoeren
