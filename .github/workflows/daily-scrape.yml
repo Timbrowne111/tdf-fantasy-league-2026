@@ -29,6 +29,9 @@ jobs:
       - name: Dependencies installeren
         run: pip install -r requirements.txt
 
+        - name: Playwright browser installeren
+        run: playwright install --with-deps chromium
+
       - name: Scrape uitvoeren
         env:
           WCS_USERNAME: ${{ secrets.WCS_USERNAME }}
