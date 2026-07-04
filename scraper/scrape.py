@@ -47,8 +47,8 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-import requests
 from bs4 import BeautifulSoup
+from playwright.sync_api import sync_playwright
 
 BASE_URL = "https://www.worldcyclingstats.com"
 LOGIN_URL = f"{BASE_URL}/en/"
@@ -64,43 +64,71 @@ HISTORY_URL = LEAGUE_URL + "/history"
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 OUTPUT_FILE = DATA_DIR / "latest.json"
 
-HEADERS = {
-    "User-Agent": (
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-        "(KHTML, like Gecko) Chrome/124.0 Safari/537.36"
-    )
-}
-
 STAGE_ID_RE = re.compile(r"^stage(\d+)$")
 
+USER_AGENT = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+)
 
-def login(session: requests.Session) -> None:
+
+def login_and_get_pages(urls: list[str]) -> dict:
+    """Start een echte (headless) Chromium-browser via Playwright, logt in
+    op worldcyclingstats.com, en haalt daarna de opgegeven URL's op.
+
+    We gebruiken een echte browser (i.p.v. de 'requests'-library) omdat de
+    site bot-detectie heeft die kale HTTP-requests met een 403 blokkeert.
+    Een echte browser met normale headers/JS komt hier doorheen."""
     username = os.environ["WCS_USERNAME"]
     password = os.environ["WCS_PASSWORD"]
 
-    session.get(LOGIN_URL, headers=HEADERS, timeout=30)
-
-    payload = {
-        "user_name": username,
-        "user_pass": password,
-        "user_login": "Log in",
-        "user_remember": "1",
-    }
-    resp = session.post(LOGIN_URL, data=payload, headers=HEADERS, timeout=30)
-    resp.raise_for_status()
-
-    check = session.get(LEAGUE_URL, headers=HEADERS, timeout=30)
-    if 'id="general"' not in check.text:
-        raise RuntimeError(
-            "Login lijkt niet gelukt: classificatietabellen niet gevonden. "
-            "Controleer WCS_USERNAME/WCS_PASSWORD."
+    pages_html = {}
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        context = browser.new_context(
+            user_agent=USER_AGENT,
+            viewport={"width": 1366, "height": 900},
+            locale="en-US",
         )
+        page = context.new_page()
+
+        page.goto(LOGIN_URL, wait_until="domcontentloaded", timeout=60000)
+        page.wait_for_timeout(1500)  # cookiebanner/scripts even laten laden
+
+        # Het login-formulier zit in een Bootstrap-modal die normaal pas
+        # verschijnt na een klik op "Login / Sign up". We gebruiken
+        # force=True zodat het invullen/klikken werkt onafhankelijk van of
+        # die modal-animatie al (visueel) is afgerond.
+        page.fill('#modal-login input[name="user_name"]', username, force=True)
+        page.fill('#modal-login input[name="user_pass"]', password, force=True)
+        with page.expect_navigation(wait_until="domcontentloaded", timeout=60000):
+            page.click('#modal-login button[name="user_login"]', force=True)
+        page.wait_for_timeout(1000)
+
+        # Sanity check: ingelogd betekent dat de classificatietabellen
+        # zichtbaar worden op de league-pagina.
+        page.goto(LEAGUE_URL, wait_until="domcontentloaded", timeout=60000)
+        if 'id="general"' not in page.content():
+            browser.close()
+            raise RuntimeError(
+                "Login lijkt niet gelukt: classificatietabellen niet gevonden. "
+                "Controleer WCS_USERNAME/WCS_PASSWORD."
+            )
+        pages_html[LEAGUE_URL] = page.content()
+
+        for url in urls:
+            if url == LEAGUE_URL:
+                continue
+            page.goto(url, wait_until="domcontentloaded", timeout=60000)
+            page.wait_for_timeout(500)
+            pages_html[url] = page.content()
+
+        browser.close()
+    return pages_html
 
 
-def get_soup(session: requests.Session, url: str) -> BeautifulSoup:
-    resp = session.get(url, headers=HEADERS, timeout=30)
-    resp.raise_for_status()
-    return BeautifulSoup(resp.text, "lxml")
+def soup_from_html(html: str) -> BeautifulSoup:
+    return BeautifulSoup(html, "lxml")
 
 
 def parse_participant_table(table) -> list[dict]:
@@ -233,23 +261,14 @@ def parse_history_table(soup: BeautifulSoup) -> list[dict]:
 
 
 def main() -> None:
-    session = requests.Session()
-    login(session)
+    urls = [LEAGUE_URL, STAGE_RESULTS_URL, MOST_PICKED_URL, MOST_POINTS_URL, HISTORY_URL]
+    pages_html = login_and_get_pages(urls)
 
-    league_soup = get_soup(session, LEAGUE_URL)
-    classifications = parse_classifications(league_soup)
-
-    stage_soup = get_soup(session, STAGE_RESULTS_URL)
-    stage_results = parse_stage_results(stage_soup)
-
-    most_picked_soup = get_soup(session, MOST_PICKED_URL)
-    most_picked = parse_rider_table(most_picked_soup, tab_id="riders")
-
-    most_points_soup = get_soup(session, MOST_POINTS_URL)
-    most_points = parse_rider_table(most_points_soup, tab_id="general")
-
-    history_soup = get_soup(session, HISTORY_URL)
-    history = parse_history_table(history_soup)
+    classifications = parse_classifications(soup_from_html(pages_html[LEAGUE_URL]))
+    stage_results = parse_stage_results(soup_from_html(pages_html[STAGE_RESULTS_URL]))
+    most_picked = parse_rider_table(soup_from_html(pages_html[MOST_PICKED_URL]), tab_id="riders")
+    most_points = parse_rider_table(soup_from_html(pages_html[MOST_POINTS_URL]), tab_id="general")
+    history = parse_history_table(soup_from_html(pages_html[HISTORY_URL]))
 
     snapshot = {
         "scraped_at_utc": datetime.now(timezone.utc).isoformat(),
