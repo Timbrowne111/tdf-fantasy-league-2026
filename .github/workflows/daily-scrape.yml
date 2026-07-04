@@ -1,8 +1,14 @@
 name: Dagelijkse Tour de France Fantasy scrape
 
 on:
+  # Draait elke dag om 20:30 CEST (= 18:30 UTC) tijdens de Tour de France 2026
+  # (4 t/m 26 juli). CEST = UTC+2 in de zomer, dus 18:30 UTC = 20:30 lokale tijd.
+  # Dit geeft ruim 3-4 uur buffer na de finish voordat de site is bijgewerkt.
   schedule:
     - cron: "30 18 4-26 7 *"
+
+  # Handmatig te starten via de "Actions" tab op GitHub, handig om te testen
+  # of om een gemiste dag alsnog in te halen.
   workflow_dispatch: {}
 
 permissions:
@@ -31,6 +37,14 @@ jobs:
           WCS_USERNAME: ${{ secrets.WCS_USERNAME }}
           WCS_PASSWORD: ${{ secrets.WCS_PASSWORD }}
         run: python scraper/scrape.py
+
+      - name: Debug-bestanden uploaden (alleen als de scrape mislukte)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-bij-falen
+          path: debug/
+          retention-days: 5
 
       - name: Excel-dashboard bouwen (bonus-export)
         run: python scraper/build_excel.py
