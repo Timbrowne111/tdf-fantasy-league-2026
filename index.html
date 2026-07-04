@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8" />
+<title>Tour de France Fantasy League - Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #0f1720;
+    --panel: #17212b;
+    --panel-light: #1e2b38;
+    --text: #e8edf2;
+    --muted: #93a3b3;
+    --accent: #ffcc00;
+    --border: #2a3a48;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Segoe UI", Arial, sans-serif;
+  }
+  header {
+    padding: 20px 24px 8px;
+    text-align: center;
+  }
+  header h1 {
+    margin: 0 0 4px;
+    font-size: 26px;
+    letter-spacing: 0.5px;
+  }
+  header .subtitle {
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .hero {
+    max-width: 1100px;
+    margin: 20px auto 40px;
+    padding: 24px;
+    background: var(--panel);
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  }
+  .hero h2 {
+    margin: 0 0 4px;
+    font-size: 22px;
+  }
+  .hero .hero-tag {
+    display: inline-block;
+    background: var(--accent);
+    color: #1a1400;
+    font-weight: 700;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+  }
+  .controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 16px 0 8px;
+    flex-wrap: wrap;
+  }
+  button.play-btn {
+    background: var(--accent);
+    color: #1a1400;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  button.play-btn:hover { filter: brightness(1.08); }
+  button.reset-btn {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  input[type="range"] { flex: 1; min-width: 160px; }
+  .day-label { font-size: 13px; color: var(--muted); min-width: 90px; text-align: right; }
+  .legend-toggle {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    margin: 14px 0 4px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    user-select: none;
+    padding: 3px 8px;
+    border-radius: 6px;
+    transition: background 0.15s;
+  }
+  .legend-item:hover { background: var(--panel-light); }
+  .legend-item.disabled { opacity: 0.35; }
+  .legend-dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
+  .legend-actions { display: flex; gap: 8px; margin: 4px 0 12px; }
+  .legend-actions a {
+    font-size: 12px; color: var(--muted); text-decoration: underline; cursor: pointer;
+  }
+  .chart-wrap { position: relative; height: 440px; }
+  .secondary-title {
+    max-width: 1100px;
+    margin: 30px auto 6px;
+    padding: 0 4px;
+    color: var(--muted);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+  }
+  .secondary-grid {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 16px;
+    padding: 8px 0 10px;
+  }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+  }
+  .card h3 { margin: 0 0 10px; font-size: 15px; }
+  .card .chart-wrap { height: 260px; }
+  table.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+  }
+  table.data-table th, table.data-table td {
+    text-align: left;
+    padding: 5px 6px;
+    border-bottom: 1px solid var(--border);
+  }
+  table.data-table th { color: var(--muted); font-weight: 600; }
+  .tabs { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+  .tab-btn {
+    background: var(--panel-light);
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .tab-btn.active { background: var(--accent); color: #1a1400; border-color: var(--accent); font-weight: 700; }
+  .scroll-table { max-height: 300px; overflow-y: auto; }
+  footer { text-align: center; color: var(--muted); font-size: 12px; padding: 30px 10px 50px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🚴 AHF Fantasy Cycling League 2026</h1>
+  <div class="subtitle" id="last-updated">Data laden...</div>
+</header>
+
+<!-- ======================= HOOFDSECTIE: ALGEMEEN KLASSEMENT ======================= -->
+<section class="hero">
+  <span class="hero-tag">BELANGRIJKSTE STAND</span>
+  <h2>Algemeen klassement - verloop per etappe</h2>
+  <div class="controls">
+    <button class="play-btn" id="play-btn">▶ Afspelen</button>
+    <button class="reset-btn" id="reset-btn">⟲ Terug naar start</button>
+    <input type="range" id="day-slider" min="0" max="0" value="0" step="1" />
+    <span class="day-label" id="day-label">Etappe -</span>
+  </div>
+  <div class="legend-actions">
+    <a id="select-all">Alles aan</a> · <a id="select-none">Alles uit</a>
+  </div>
+  <div class="legend-toggle" id="legend-general"></div>
+  <div class="chart-wrap"><canvas id="chart-general"></canvas></div>
+</section>
+
+<!-- ======================= BIJZAAK: OVERIGE KLASSEMENTEN ======================= -->
+<div class="secondary-title">Overige klassementen (bijzaak)</div>
+<div class="secondary-grid" id="secondary-classifications"></div>
+
+<!-- ======================= BIJZAAK: STAGE RESULTS / RIDERS / HISTORY ======================= -->
+<div class="secondary-title">Etappe-uitslagen, renners &amp; historie (bijzaak)</div>
+<div class="secondary-grid">
+  <div class="card" style="grid-column: 1 / -1;">
+    <h3>Stage results per etappe</h3>
+    <div class="tabs" id="stage-tabs"></div>
+    <div class="scroll-table"><table class="data-table" id="stage-table"></table></div>
+  </div>
+  <div class="card">
+    <h3>Most picked (renners)</h3>
+    <div class="scroll-table"><table class="data-table" id="most-picked-table"></table></div>
+  </div>
+  <div class="card">
+    <h3>Most points (renners)</h3>
+    <div class="scroll-table"><table class="data-table" id="most-points-table"></table></div>
+  </div>
+  <div class="card" style="grid-column: 1 / -1;">
+    <h3>History (eerdere jaren van deze league)</h3>
+    <div class="scroll-table"><table class="data-table" id="history-table"></table></div>
+  </div>
+</div>
+
+<footer>
+  Automatisch gescraped van worldcyclingstats.com · gebouwd voor de AHF Fantasy League 2026
+</footer>
+
+<script>
+const COLOR_PALETTE = [
+  "#e6194b", "#3cb44b", "#4363d8", "#f58231", "#911eb4",
+  "#42d4f4", "#f032e6", "#d2a106", "#008080", "#9a6324"
+];
+
+let DATA = null;
+let colorMap = {};
+let nameMap = {};
+let hiddenSlugs = new Set();
+
+// -------- Data laden --------
+async function loadData() {
+  // Probeert eerst het echte data-bestand; valt terug op het voorbeeldbestand
+  // (handig tijdens ontwikkeling / als er nog geen scrape gedraaid heeft).
+  const candidates = ["data/latest.json", "latest.json"];
+  for (const url of candidates) {
+    try {
+      const resp = await fetch(url, { cache: "no-store" });
+      if (resp.ok) return await resp.json();
+    } catch (e) { /* volgende proberen */ }
+  }
+  throw new Error("Kon geen databestand vinden (data/latest.json).");
+}
+
+function buildColorAndNameMaps(data) {
+  const slugs = new Set();
+  (data.classifications.general || []).forEach(r => {
+    if (r.participant_slug) slugs.add(r.participant_slug);
+  });
+  const sorted = Array.from(slugs).sort();
+  sorted.forEach((slug, i) => { colorMap[slug] = COLOR_PALETTE[i % COLOR_PALETTE.length]; });
+  (data.classifications.general || []).forEach(r => {
+    if (r.participant_slug) nameMap[r.participant_slug] = r.Participant;
+  });
+}
+
+function getStageKeysWithData(data) {
+  return Object.keys(data.stage_results)
+    .filter(k => (data.stage_results[k] || []).length > 0)
+    .sort((a, b) => parseInt(a.replace("Stage ", "")) - parseInt(b.replace("Stage ", "")));
+}
+
+// -------- Animated / toggleable line chart component --------
+function createAnimatedChart(canvasId, legendContainerId, data, valueKey, tabId) {
+  const stageKeys = getStageKeysWithData(data);
+  const slugs = Object.keys(colorMap);
+
+  // matrix[slug] = array van waarden (of null) per etappe
+  const matrix = {};
+  slugs.forEach(slug => {
+    matrix[slug] = stageKeys.map(stageKey => {
+      const rows = data.stage_results[stageKey] || [];
+      const row = rows.find(r => r.participant_slug === slug);
+      if (!row) return null;
+      const raw = row[valueKey];
+      const val = parseFloat(raw);
+      return isNaN(val) ? null : val;
+    });
+  });
+
+  const ctx = document.getElementById(canvasId).getContext("2d");
+  const datasets = slugs.map(slug => ({
+    label: nameMap[slug] || slug,
+    data: [],
+    borderColor: colorMap[slug],
+    backgroundColor: colorMap[slug],
+    borderWidth: 2.5,
+    tension: 0.25,
+    pointRadius: 3,
+    pointHoverRadius: 5,
+    spanGaps: true,
+    _slug: slug,
+  }));
+
+  const chart = new Chart(ctx, {
+    type: "line",
+    data: { labels: [], datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: { duration: 500, easing: "easeOutQuad" },
+      interaction: { mode: "index", intersect: false },
+      scales: {
+        x: { ticks: { color: "#93a3b3" }, grid: { color: "#2a3a48" } },
+        y: { ticks: { color: "#93a3b3" }, grid: { color: "#2a3a48" }, title: { display: true, text: valueKey, color: "#93a3b3" } },
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            title: (items) => stageKeys[items[0].dataIndex],
+          },
+        },
+      },
+    },
+  });
+
+  // Legenda met toggle-knoppen bouwen
+  const legendEl = document.getElementById(legendContainerId);
+  legendEl.innerHTML = "";
+  slugs.forEach(slug => {
+    const item = document.createElement("div");
+    item.className = "legend-item";
+    item.dataset.slug = slug;
+    item.innerHTML = `<span class="legend-dot" style="background:${colorMap[slug]}"></span>${nameMap[slug] || slug}`;
+    item.addEventListener("click", () => {
+      const idx = chart.data.datasets.findIndex(d => d._slug === slug);
+      const meta = chart.getDatasetMeta(idx);
+      meta.hidden = meta.hidden === null ? !chart.data.datasets[idx].hidden : !meta.hidden;
+      item.classList.toggle("disabled", meta.hidden === true);
+      chart.update();
+    });
+    legendEl.appendChild(item);
+  });
+
+  let currentDay = 0; // 0 = nog niets getoond
+  let playing = false;
+  let timer = null;
+
+  function render(dayIndex) {
+    currentDay = Math.max(0, Math.min(dayIndex, stageKeys.length));
+    chart.data.labels = stageKeys.slice(0, currentDay);
+    chart.data.datasets.forEach(ds => {
+      ds.data = matrix[ds._slug].slice(0, currentDay);
+    });
+    chart.update();
+  }
+
+  render(stageKeys.length); // start: alles al getoond (statisch); animatie kan vanaf 0 herstart worden
+
+  return { chart, stageKeys, render, get currentDay() { return currentDay; },
+           set currentDay(v) { currentDay = v; } };
+}
+
+// -------- Play / slider besturing voor de hoofdgrafiek --------
+function wireHeroControls(controller) {
+  const playBtn = document.getElementById("play-btn");
+  const resetBtn = document.getElementById("reset-btn");
+  const slider = document.getElementById("day-slider");
+  const dayLabel = document.getElementById("day-label");
+  const selectAll = document.getElementById("select-all");
+  const selectNone = document.getElementById("select-none");
+
+  slider.max = controller.stageKeys.length;
+  slider.value = controller.stageKeys.length;
+
+  function updateLabel(i) {
+    dayLabel.textContent = i > 0 ? controller.stageKeys[i - 1] : "Voor start";
+  }
+  updateLabel(controller.stageKeys.length);
+
+  let playing = false;
+  let timer = null;
+
+  function stopPlaying() {
+    playing = false;
+    clearInterval(timer);
+    playBtn.textContent = "▶ Afspelen";
+  }
+
+  playBtn.addEventListener("click", () => {
+    if (playing) { stopPlaying(); return; }
+    playing = true;
+    playBtn.textContent = "⏸ Pauzeer";
+    let i = parseInt(slider.value, 10);
+    if (i >= controller.stageKeys.length) i = 0;
+    timer = setInterval(() => {
+      i++;
+      controller.render(i);
+      slider.value = i;
+      updateLabel(i);
+      if (i >= controller.stageKeys.length) stopPlaying();
+    }, 700);
+  });
+
+  resetBtn.addEventListener("click", () => {
+    stopPlaying();
+    controller.render(0);
+    slider.value = 0;
+    updateLabel(0);
+  });
+
+  slider.addEventListener("input", () => {
+    stopPlaying();
+    const i = parseInt(slider.value, 10);
+    controller.render(i);
+    updateLabel(i);
+  });
+
+  selectAll.addEventListener("click", () => {
+    document.querySelectorAll("#legend-general .legend-item").forEach(item => {
+      const idx = controller.chart.data.datasets.findIndex(d => d._slug === item.dataset.slug);
+      controller.chart.getDatasetMeta(idx).hidden = false;
+      item.classList.remove("disabled");
+    });
+    controller.chart.update();
+  });
+  selectNone.addEventListener("click", () => {
+    document.querySelectorAll("#legend-general .legend-item").forEach(item => {
+      const idx = controller.chart.data.datasets.findIndex(d => d._slug === item.dataset.slug);
+      controller.chart.getDatasetMeta(idx).hidden = true;
+      item.classList.add("disabled");
+    });
+    controller.chart.update();
+  });
+}
+
+// -------- Secundaire klassementen (Points / Mountain / Youth) --------
+function buildSecondaryClassifications(data) {
+  const grid = document.getElementById("secondary-classifications");
+  const configs = [
+    { tabId: "points", valueKey: "Pts", label: "Puntenklassement" },
+    { tabId: "mountain", valueKey: "Pts", label: "Bergklassement" },
+    { tabId: "youth", valueKey: "Pts", label: "Jongerenklassement" },
+  ];
+  configs.forEach((cfg, i) => {
+    const canvasId = `chart-sec-${i}`;
+    const legendId = `legend-sec-${i}`;
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `<h3>${cfg.label}</h3>
+      <div class="legend-toggle" id="${legendId}" style="margin-bottom:6px;"></div>
+      <div class="chart-wrap"><canvas id="${canvasId}"></canvas></div>`;
+    grid.appendChild(card);
+    createAnimatedChart(canvasId, legendId, data, cfg.valueKey, cfg.tabId);
+  });
+}
+
+// -------- Stage results tabel met tabs --------
+function buildStageResultsTable(data) {
+  const stageKeys = getStageKeysWithData(data);
+  const tabsEl = document.getElementById("stage-tabs");
+  const tableEl = document.getElementById("stage-table");
+
+  function renderStage(stageKey) {
+    const rows = data.stage_results[stageKey] || [];
+    if (!rows.length) { tableEl.innerHTML = "<tr><td>Geen data</td></tr>"; return; }
+    const cols = ["Participant", "PC", "MC", "GC", "T", "PP", "Pts"];
+    let html = "<tr>" + cols.map(c => `<th>${c}</th>`).join("") + "</tr>";
+    rows.forEach(r => {
+      html += "<tr>" + cols.map(c => `<td>${r[c] ?? ""}</td>`).join("") + "</tr>";
+    });
+    tableEl.innerHTML = html;
+  }
+
+  stageKeys.forEach((key, i) => {
+    const btn = document.createElement("button");
+    btn.className = "tab-btn" + (i === stageKeys.length - 1 ? " active" : "");
+    btn.textContent = key;
+    btn.addEventListener("click", () => {
+      document.querySelectorAll("#stage-tabs .tab-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      renderStage(key);
+    });
+    tabsEl.appendChild(btn);
+  });
+  if (stageKeys.length) renderStage(stageKeys[stageKeys.length - 1]);
+}
+
+// -------- Renner-tabellen (most picked / most points) --------
+function buildRiderTable(elId, rows, cols) {
+  const el = document.getElementById(elId);
+  if (!rows.length) { el.innerHTML = "<tr><td>Geen data</td></tr>"; return; }
+  let html = "<tr>" + cols.map(c => `<th>${c.label}</th>`).join("") + "</tr>";
+  rows.forEach(r => {
+    html += "<tr>" + cols.map(c => `<td>${r[c.key] ?? ""}</td>`).join("") + "</tr>";
+  });
+  el.innerHTML = html;
+}
+
+function buildHistoryTable(rows) {
+  const el = document.getElementById("history-table");
+  if (!rows.length) { el.innerHTML = "<tr><td>Geen data</td></tr>"; return; }
+  const cols = [
+    { key: "year", label: "Jaar" },
+    { key: "general_winner", label: "Algemeen" },
+    { key: "points_winner", label: "Punten" },
+    { key: "mountain_winner", label: "Bergen" },
+    { key: "youth_winner", label: "Jongeren" },
+  ];
+  let html = "<tr>" + cols.map(c => `<th>${c.label}</th>`).join("") + "</tr>";
+  rows.forEach(r => {
+    html += "<tr>" + cols.map(c => `<td>${r[c.key] ?? ""}</td>`).join("") + "</tr>";
+  });
+  el.innerHTML = html;
+}
+
+// -------- Init --------
+(async function init() {
+  DATA = await loadData();
+  buildColorAndNameMaps(DATA);
+
+  document.getElementById("last-updated").textContent =
+    "Laatst bijgewerkt: " + new Date(DATA.scraped_at_utc).toLocaleString("nl-NL");
+
+  const heroController = createAnimatedChart("chart-general", "legend-general", DATA, "Pts", "general");
+  wireHeroControls(heroController);
+
+  buildSecondaryClassifications(DATA);
+  buildStageResultsTable(DATA);
+
+  buildRiderTable("most-picked-table", DATA.most_picked, [
+    { key: "Rider", label: "Renner" },
+    { key: "Team", label: "Team" },
+    { key: "times_picked", label: "× gekozen" },
+    { key: "percentage", label: "%" },
+    { key: "Pts", label: "Pts" },
+  ]);
+  buildRiderTable("most-points-table", DATA.most_points, [
+    { key: "Rider", label: "Renner" },
+    { key: "Team", label: "Team" },
+    { key: "Pts", label: "Pts" },
+    { key: "times_picked", label: "× gekozen" },
+    { key: "percentage", label: "%" },
+  ]);
+  buildHistoryTable(DATA.history);
+})();
+</script>
+</body>
+</html>
