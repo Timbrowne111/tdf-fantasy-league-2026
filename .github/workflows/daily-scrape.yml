@@ -1,0 +1,47 @@
+name: Dagelijkse Tour de France Fantasy scrape
+
+on:
+  # Draait elke dag om 20:30 CEST (= 18:30 UTC) tijdens de Tour de France 2026
+  # (4 t/m 26 juli). CEST = UTC+2 in de zomer, dus 18:30 UTC = 20:30 lokale tijd.
+  # Dit geeft ruim 3-4 uur buffer na de finish voordat de site is bijgewerkt.
+  schedule:
+    - cron: "30 18 4-26 7 *"
+
+  # Handmatig te starten via de "Actions" tab op GitHub, handig om te testen
+  # of om een gemiste dag alsnog in te halen.
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repository uitchecken
+        uses: actions/checkout@v4
+
+      - name: Python installeren
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Dependencies installeren
+        run: pip install -r requirements.txt
+
+      - name: Scrape uitvoeren
+        env:
+          WCS_USERNAME: ${{ secrets.WCS_USERNAME }}
+          WCS_PASSWORD: ${{ secrets.WCS_PASSWORD }}
+        run: python scraper/scrape.py
+
+      - name: Excel-dashboard bouwen (bonus-export)
+        run: python scraper/build_excel.py
+
+      - name: Wijzigingen committen
+        run: |
+          git config user.name "wcs-scraper-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/latest.json data/dashboard.xlsx
+          git diff --staged --quiet && echo "Geen wijzigingen" || git commit -m "Automatische scrape $(date -u +%Y-%m-%d)"
+          git push
