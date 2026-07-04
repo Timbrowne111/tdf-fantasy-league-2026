@@ -78,52 +78,68 @@ def login_and_get_pages(urls: list[str]) -> dict:
 
     We gebruiken een echte browser (i.p.v. de 'requests'-library) omdat de
     site bot-detectie heeft die kale HTTP-requests met een 403 blokkeert.
-    Een echte browser met normale headers/JS komt hier doorheen."""
+    Een paar extra instellingen maken de browser minder herkenbaar als
+    geautomatiseerd (headless)."""
     username = os.environ["WCS_USERNAME"]
     password = os.environ["WCS_PASSWORD"]
 
     pages_html = {}
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
+        browser = p.chromium.launch(
+            headless=True,
+            args=["--disable-blink-features=AutomationControlled"],
+        )
         context = browser.new_context(
             user_agent=USER_AGENT,
             viewport={"width": 1366, "height": 900},
             locale="en-US",
         )
+        # Verbergt de 'navigator.webdriver' vlag die bot-detectiescripts
+        # vaak gebruiken om een geautomatiseerde browser te herkennen.
+        context.add_init_script(
+            "Object.defineProperty(navigator, 'webdriver', {get: () => undefined});"
+        )
         page = context.new_page()
 
-        page.goto(LOGIN_URL, wait_until="domcontentloaded", timeout=60000)
-        page.wait_for_timeout(1500)  # cookiebanner/scripts even laten laden
+        try:
+            page.goto(LOGIN_URL, wait_until="networkidle", timeout=60000)
+            page.wait_for_timeout(2000)  # cookiebanner/scripts even laten laden
 
-        # Het login-formulier zit in een Bootstrap-modal die normaal pas
-        # verschijnt na een klik op "Login / Sign up". We gebruiken
-        # force=True zodat het invullen/klikken werkt onafhankelijk van of
-        # die modal-animatie al (visueel) is afgerond.
-        page.fill('#modal-login input[name="user_name"]', username, force=True)
-        page.fill('#modal-login input[name="user_pass"]', password, force=True)
-        with page.expect_navigation(wait_until="domcontentloaded", timeout=60000):
-            page.click('#modal-login button[name="user_login"]', force=True)
-        page.wait_for_timeout(1000)
+            page.fill('#modal-login input[name="user_name"]', username, force=True, timeout=15000)
+            page.fill('#modal-login input[name="user_pass"]', password, force=True, timeout=15000)
+            with page.expect_navigation(wait_until="domcontentloaded", timeout=60000):
+                page.click('#modal-login button[name="user_login"]', force=True, timeout=15000)
+            page.wait_for_timeout(1000)
 
-        # Sanity check: ingelogd betekent dat de classificatietabellen
-        # zichtbaar worden op de league-pagina.
-        page.goto(LEAGUE_URL, wait_until="domcontentloaded", timeout=60000)
-        if 'id="general"' not in page.content():
+            page.goto(LEAGUE_URL, wait_until="networkidle", timeout=60000)
+            if 'id="general"' not in page.content():
+                raise RuntimeError(
+                    "Login lijkt niet gelukt: classificatietabellen niet gevonden. "
+                    "Controleer WCS_USERNAME/WCS_PASSWORD."
+                )
+            pages_html[LEAGUE_URL] = page.content()
+
+            for url in urls:
+                if url == LEAGUE_URL:
+                    continue
+                page.goto(url, wait_until="networkidle", timeout=60000)
+                page.wait_for_timeout(500)
+                pages_html[url] = page.content()
+
+        except Exception:
+            # Bewaar een screenshot + de HTML van het moment van falen,
+            # zodat we in de GitHub Actions "artifacts" precies kunnen
+            # zien wat de browser te zien kreeg.
+            debug_dir = Path(__file__).resolve().parent.parent / "debug"
+            debug_dir.mkdir(exist_ok=True)
+            try:
+                page.screenshot(path=str(debug_dir / "failure.png"), full_page=True)
+                (debug_dir / "failure.html").write_text(page.content(), encoding="utf-8")
+            except Exception:
+                pass  # als zelfs dit mislukt, gooien we alsnog de oorspronkelijke fout
+            raise
+        finally:
             browser.close()
-            raise RuntimeError(
-                "Login lijkt niet gelukt: classificatietabellen niet gevonden. "
-                "Controleer WCS_USERNAME/WCS_PASSWORD."
-            )
-        pages_html[LEAGUE_URL] = page.content()
-
-        for url in urls:
-            if url == LEAGUE_URL:
-                continue
-            page.goto(url, wait_until="domcontentloaded", timeout=60000)
-            page.wait_for_timeout(500)
-            pages_html[url] = page.content()
-
-        browser.close()
     return pages_html
 
 
