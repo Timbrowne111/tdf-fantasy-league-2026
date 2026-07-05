@@ -317,7 +317,7 @@ function getStageKeysWithData(data) {
 }
 
 // -------- Animated / toggleable line chart component --------
-function createAnimatedChart(canvasId, legendContainerId, data, valueKey, tabId) {
+function createAnimatedChart(canvasId, legendContainerId, data, valueKey, tabId, showLeaderMarker = false) {
   const stageKeys = getStageKeysWithData(data);
   const slugs = Object.keys(colorMap);
 
@@ -393,6 +393,57 @@ function createAnimatedChart(canvasId, legendContainerId, data, valueKey, tabId)
   let playing = false;
   let timer = null;
 
+  // Klein "fietsend mannetje" dat op de lijn van de huidige koploper
+  // (nummer 1 op dat moment) rijdt tijdens de animatie.
+  let markerEl = null;
+  if (showLeaderMarker) {
+    const wrapEl = document.getElementById(canvasId).parentElement;
+    wrapEl.style.position = wrapEl.style.position || "relative";
+    markerEl = document.createElement("div");
+    markerEl.textContent = "🚴";
+    markerEl.style.position = "absolute";
+    markerEl.style.fontSize = "22px";
+    markerEl.style.lineHeight = "1";
+    markerEl.style.pointerEvents = "none";
+    markerEl.style.zIndex = "10";
+    markerEl.style.transition = "left 0.6s ease, top 0.6s ease, opacity 0.3s ease";
+    markerEl.style.transform = "translate(-50%, -125%)";
+    markerEl.style.opacity = "0";
+    markerEl.style.filter = "drop-shadow(0 1px 2px rgba(0,0,0,0.6))";
+    wrapEl.appendChild(markerEl);
+  }
+
+  function updateLeaderMarker() {
+    if (!markerEl) return;
+    const lastIdx = chart.data.labels.length - 1;
+    if (lastIdx < 0) {
+      markerEl.style.opacity = "0";
+      return;
+    }
+    let bestVal = -Infinity;
+    let bestDatasetIdx = -1;
+    chart.data.datasets.forEach((ds, i) => {
+      const v = ds.data[lastIdx];
+      if (v !== null && v !== undefined && v > bestVal) {
+        bestVal = v;
+        bestDatasetIdx = i;
+      }
+    });
+    if (bestDatasetIdx === -1) {
+      markerEl.style.opacity = "0";
+      return;
+    }
+    const meta = chart.getDatasetMeta(bestDatasetIdx);
+    const point = meta.data[lastIdx];
+    if (!point) {
+      markerEl.style.opacity = "0";
+      return;
+    }
+    markerEl.style.opacity = "1";
+    markerEl.style.left = point.x + "px";
+    markerEl.style.top = point.y + "px";
+  }
+
   function render(dayIndex) {
     currentDay = Math.max(0, Math.min(dayIndex, stageKeys.length));
     chart.data.labels = stageKeys.slice(0, currentDay);
@@ -400,9 +451,18 @@ function createAnimatedChart(canvasId, legendContainerId, data, valueKey, tabId)
       ds.data = matrix[ds._slug].slice(0, currentDay);
     });
     chart.update();
+    updateLeaderMarker();
   }
 
   render(stageKeys.length); // start: alles al getoond (statisch); animatie kan vanaf 0 herstart worden
+
+  if (showLeaderMarker) {
+    window.addEventListener("resize", () => {
+      // canvas-afmetingen veranderen bij resize; positie na een tikje
+      // opnieuw berekenen zodra Chart.js zelf ook heeft herschaald.
+      setTimeout(updateLeaderMarker, 150);
+    });
+  }
 
   return { chart, stageKeys, render, get currentDay() { return currentDay; },
            set currentDay(v) { currentDay = v; } };
@@ -569,7 +629,7 @@ function buildHistoryTable(rows) {
   document.getElementById("last-updated").textContent =
     "Laatst bijgewerkt: " + new Date(DATA.scraped_at_utc).toLocaleString("nl-NL");
 
-  const heroController = createAnimatedChart("chart-general", "legend-general", DATA, "Pts", "general");
+  const heroController = createAnimatedChart("chart-general", "legend-general", DATA, "Pts", "general", true);
   wireHeroControls(heroController);
 
   buildSecondaryClassifications(DATA);
