@@ -1,119 +1,126 @@
-# Tour de France Fantasy League — automatische scraper & Excel-dashboard
+# Tour de France Fantasy League — automatische scraper & interactief dashboard
 
 Dit project scrapet elke dag automatisch de standen van jullie league op
-worldcyclingstats.com en bouwt er een Excel-dashboard van met lijngrafieken
-(algemene stand, klassementen, stijgers/dalers).
+worldcyclingstats.com en bouwt er een interactieve webpagina + Excel-
+dashboard van (lijngrafieken met animatie, aan/uit-knoppen per deelnemer).
 
-Alles draait **gratis in de cloud via GitHub Actions** — je pc hoeft niet
-aan te staan.
+**Belangrijk:** de site blokkeert geautomatiseerde bezoekers vanaf
+cloud-servers (zoals GitHub Actions) met een Cloudflare-beveiligings-
+controle. Daarom draait de scraper **lokaal op jouw eigen pc** (via
+Windows Taskplanner, 's avonds automatisch) — vanaf je eigen internet-
+verbinding triggert die controle namelijk niet. De pc pusht de resultaten
+naar GitHub, en de interactieve pagina (gratis gehost via GitHub Pages)
+wordt daarna automatisch bijgewerkt, ongeacht vanaf waar er gepusht is.
 
 ---
 
-## Stap 1 — GitHub-account aanmaken (eenmalig, 2 minuten)
+## Stap 1 — GitHub-account & repository (eenmalig)
 
-1. Ga naar https://github.com/signup
-2. Vul een e-mailadres, wachtwoord en gebruikersnaam in en volg de stappen.
-3. Bevestig je e-mailadres via de link die GitHub je stuurt.
+1. Log in op https://github.com (heb je al).
+2. Rechtsboven **+ → "New repository"**.
+3. Naam: bijvoorbeeld `tdf-fantasy-league-2026`. Zichtbaarheid: **Private**.
+4. **Create repository**.
 
-Klaar — je hebt nu een (gratis) GitHub-account.
+## Stap 2 — Projectbestanden uploaden
 
-## Stap 2 — Een nieuwe, privé repository aanmaken
+1. Pak deze zip uit op je pc.
+2. Open je nieuwe (lege) repository → **"uploading an existing file"**.
+3. Sleep de **hele inhoud** van de uitgepakte map erin (inclusief de
+   verborgen map `.github/` — check na het uploaden of die goed is
+   meegekomen; zo niet, zie de opmerking in Stap 5 van eerdere hulp).
+4. **Commit changes**.
 
-Een "repository" (repo) is simpelweg een projectmap in de cloud.
+## Stap 3 — Python op je eigen pc installeren (eenmalig)
 
-1. Log in op https://github.com
-2. Klik rechtsboven op de **+** en kies **"New repository"**.
-3. Geef 'm een naam, bijvoorbeeld `tdf-fantasy-league-2026`.
-4. Zet de zichtbaarheid op **Private** (zodat alleen jij en wie je uitnodigt
-   het kunnen zien — belangrijk, want straks staan hier je inloggegevens
-   *versleuteld* in, en willen we geen publieke Excel-data delen zonder dat
-   je dat zelf beslist).
-5. Klik op **"Create repository"**.
+Je pc moet zelf Python hebben om het script te draaien.
 
-## Stap 3 — De projectbestanden uploaden
+1. Ga naar https://www.python.org/downloads/ → download en installeer de
+   nieuwste versie. **Belangrijk:** vink tijdens installatie de optie
+   **"Add python.exe to PATH"** aan.
+2. Open een **opdrachtprompt** (Windows-toets → typ `cmd` → Enter) en
+   typ `python --version` — je zou een versienummer moeten zien.
 
-Ik heb alle bestanden al voor je klaargezet (zie de bijlagen in dit
-gesprek: `scraper/scrape.py`, `scraper/build_excel.py`,
-`.github/workflows/daily-scrape.yml`, `requirements.txt`).
+## Stap 4 — Git installeren (eenmalig, om te kunnen pushen)
 
-Makkelijkste manier zonder command line:
+1. Download en installeer https://git-scm.com/download/win (standaard-
+   instellingen aanhouden tijdens installatie is prima).
+2. Kloon je repository naar je pc. Open een opdrachtprompt in de map
+   waar je het project wilt hebben en typ (vervang de URL door die van
+   jouw eigen repository, te vinden via de groene **"Code"**-knop op
+   GitHub):
+   ```
+   git clone https://github.com/Timbrowne111/tdf-fantasy-league-2026.git
+   cd tdf-fantasy-league-2026
+   ```
+3. Bij de eerste keer pushen vraagt Windows je waarschijnlijk in te
+   loggen via een browserpop-up — log in met je GitHub-account. Daarna
+   onthoudt Windows dit.
 
-1. Open je nieuwe repository op GitHub.
-2. Klik op **"uploading an existing file"** (staat op de lege-repo-pagina),
-   of klik op **Add file → Upload files**.
-3. Sleep de hele projectmap (met behoud van de submap-structuur
-   `scraper/` en `.github/workflows/`) erin. Let op: GitHub's
-   upload-scherm behoudt mapstructuur als je de mappen zelf meesleept
-   (niet alleen losse bestanden).
-4. Klik onderaan op **"Commit changes"**.
+## Stap 5 — Je inloggegevens lokaal opslaan
 
-*(Ken je iemand die met Git/command line werkt? Dan kan het ook via
-`git clone`, bestanden erin zetten, `git push` — maar dat is niet nodig.)*
+1. Maak in de projectmap (dezelfde map als `run_local.py`) een nieuw
+   tekstbestand aan met de naam **`secrets.env`** (let op: geen `.txt`
+   erachter — bij het opslaan in Kladblok kies je bij "Opslaan als
+   type" voor "Alle bestanden").
+2. Zet daarin (met jouw eigen gegevens):
+   ```
+   WCS_USERNAME=jouw_gebruikersnaam
+   WCS_PASSWORD=jouw_wachtwoord
+   ```
+3. Dit bestand staat al in `.gitignore` en wordt dus nooit meegecommit
+   naar GitHub — het blijft alleen op jouw eigen pc.
 
-## Stap 4 — Je inloggegevens veilig opslaan als "Secrets"
+## Stap 6 — Eenmalig testen
 
-Secrets zijn versleutelde variabelen die alleen de automatische workflow
-kan lezen — jij, andere bezoekers, en zelfs GitHub-medewerkers kunnen ze
-niet terugzien nadat je ze hebt opgeslagen.
+Dubbelklik op **`run_daily.bat`** in de projectmap.
 
-1. Ga in je repository naar **Settings** (tab boven in de repo).
-2. In het linkermenu: **Secrets and variables → Actions**.
-3. Klik op **"New repository secret"**.
-4. Naam: `WCS_USERNAME` — Waarde: jouw gebruikersnaam op worldcyclingstats.com.
-   Klik **Add secret**.
-5. Herhaal voor **`WCS_PASSWORD`** met je wachtwoord.
+Er verschijnt een zwart venster dat:
+1. de benodigde Python-pakketten installeert (kan de eerste keer een
+   paar minuten duren, vooral het downloaden van de Chromium-browser),
+2. inlogt op worldcyclingstats.com en de standen scrapet,
+3. het Excel-bestand bouwt,
+4. de wijzigingen naar GitHub pusht.
 
-## Stap 5 — De automatisering activeren
+Zie je een foutmelding? Kopieer de tekst en stuur die naar mij door.
+Zie je **"Klaar!"** onderaan? Dan werkt alles.
 
-1. Ga naar de tab **Actions** boven in je repository.
-2. GitHub vraagt mogelijk om workflows te bevestigen — klik op
-   **"I understand my workflows, go ahead and enable them"**.
-3. Je ziet nu **"Dagelijkse Tour de France Fantasy scrape"** in de lijst.
-   Deze draait vanaf nu automatisch elke dag om 20:30 (Nederlandse tijd)
-   tijdens de Tour.
+## Stap 7 — Automatisch elke dag laten draaien (Windows Taskplanner)
 
-### Meteen even testen
+1. Windows-toets → typ **"Taakplanner"** (Task Scheduler) → openen.
+2. Rechts: **"Basistaak maken..."**.
+3. Naam: `TdF Fantasy scrape`. **Volgende**.
+4. Trigger: **Dagelijks**. **Volgende** → begindatum vandaag, tijdstip
+   bijvoorbeeld **20:30** (na de finish, met wat buffer). **Volgende**.
+5. Actie: **"Een programma starten"**. **Volgende**.
+6. Bij **"Programma/script"**: klik **Bladeren** en selecteer
+   `run_daily.bat` in je projectmap. **Volgende** → **Voltooien**.
 
-Je hoeft niet te wachten tot vanavond:
+Vanaf nu draait de scrape elke avond automatisch — **wel moet je pc dan
+aan staan** (hij mag in slaapstand net wel/niet werken afhankelijk van je
+energie-instellingen; als je pc vaak uit staat op dat tijdstip, kies een
+ander tijdstip waarop hij wél aan staat, bijvoorbeeld 's ochtends).
 
-1. Klik op **Actions → Dagelijkse Tour de France Fantasy scrape**.
-2. Klik rechts op **"Run workflow" → Run workflow**.
-3. Wacht ~30 seconden en klik erop om te zien of hij groen (geslaagd) of
-   rood (mislukt) wordt. Bij rood: klik erop, lees de foutmelding, en
-   stuur die aan mij door — meestal is het een verkeerde gebruikersnaam/
-   wachtwoord of een kleine wijziging in de site-structuur die ik dan snel
-   kan fixen.
+## Stap 8 — GitHub Pages aanzetten (voor de interactieve link)
 
-## Stap 6 — GitHub Pages aanzetten (voor de interactieve pagina)
+1. **Settings → Pages** in je repository.
+2. **Source**: "Deploy from a branch". **Branch**: `main`, map `/ (root)`.
+   **Save**.
+3. Na ~1 minuut toont GitHub de link, bijvoorbeeld:
+   `https://timbrowne111.github.io/tdf-fantasy-league-2026/`
 
-Dit is de stap die je een **link** geeft naar de interactieve pagina met
-de animatie en aan/uit-knoppen (in plaats van alleen een Excel-download).
+Die link kun je met collega's delen — wordt automatisch bijgewerkt zodra
+jouw pc de dagelijkse scrape heeft gedraaid.
 
-1. Ga naar **Settings → Pages** in je repository.
-2. Bij **"Build and deployment"** → **Source**: kies **"Deploy from a branch"**.
-3. Bij **Branch**: kies **`main`** en map **`/ (root)`**. Klik **Save**.
-4. Wacht ~1 minuut. GitHub toont dan boven in dit scherm een link zoals:
-   `https://<jouw-gebruikersnaam>.github.io/tdf-fantasy-league-2026/`
+---
 
-Dat is de link die je met je collega's kunt delen — die pagina wordt
-automatisch elke dag bijgewerkt zodra de scraper gedraaid heeft.
+## Bestandsoverzicht
 
-> Let op: bij een **private** repository is GitHub Pages ook privé-achtig
-> (alleen mensen met toegang tot de repo kunnen 'm zien, of je moet de repo
-> op Public zetten voor Pages). Wil je 'm makkelijk met collega's delen
-> zonder dat ze een GitHub-account nodig hebben, zet de repo dan op
-> **Public** — er staan alleen league-standen in, geen wachtwoorden (die
-> blijven altijd als versleutelde secret, nooit in de zichtbare bestanden).
+- `run_local.py` — de eigenlijke pipeline (scrapen → Excel bouwen → committen/pushen).
+- `run_daily.bat` — dubbelklikbaar Windows-script dat `run_local.py` aanroept (dit stel je in bij Taskplanner).
+- `secrets.env` — **jouw eigen** inloggegevens (maak je zelf aan, staat niet in de zip, komt nooit op GitHub).
+- `scraper/scrape.py` / `scraper/build_excel.py` — ongewijzigd, worden door `run_local.py` aangeroepen.
+- `.github/workflows/daily-scrape.yml` — nu alleen nog een handmatige noodoptie; de automatische cloud-planning staat uit.
 
-## Stap 7 — Het dashboard bekijken
-
-- **Interactieve pagina (met animatie + aan/uit-knoppen):** de link uit
-  Stap 6, bijvoorbeeld `https://<gebruikersnaam>.github.io/<repo-naam>/`.
-- **Excel-bonusbestand:** `data/dashboard.xlsx` in de repository
-  (Download raw file). Zelfde cijfers, statische grafieken, geen
-  animatie/toggles (dat kan Excel niet).
-- **Ruwe data:** `data/latest.json` — alles wat gescraped is, voor eigen
-  analyses.
 
 
 ---

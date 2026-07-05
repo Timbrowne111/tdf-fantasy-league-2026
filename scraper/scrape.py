@@ -71,6 +71,12 @@ USER_AGENT = (
     "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
 )
 
+# Op true zetten laat je het Chromium-vensterje echt zien (handig om 1x te
+# controleren of het inloggen goed gaat, of om een eventuele Cloudflare-
+# controle een keer met de hand weg te klikken). Zet 'm via de omgevings-
+# variabele WCS_HEADLESS=false, of verander de default hieronder.
+HEADLESS = os.environ.get("WCS_HEADLESS", "true").lower() != "false"
+
 
 def login_and_get_pages(urls: list[str]) -> dict:
     """Start een echte (headless) Chromium-browser via Playwright, logt in
@@ -86,7 +92,7 @@ def login_and_get_pages(urls: list[str]) -> dict:
     pages_html = {}
     with sync_playwright() as p:
         browser = p.chromium.launch(
-            headless=True,
+            headless=HEADLESS,
             args=["--disable-blink-features=AutomationControlled"],
         )
         context = browser.new_context(
