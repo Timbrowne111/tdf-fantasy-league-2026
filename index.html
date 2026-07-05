@@ -341,7 +341,7 @@ function createAnimatedChart(canvasId, legendContainerId, data, valueKey, tabId,
     borderColor: colorMap[slug],
     backgroundColor: colorMap[slug],
     borderWidth: 2.5,
-    tension: 0.25,
+    tension: showLeaderMarker ? 0 : 0.25,
     pointRadius: 3,
     pointHoverRadius: 5,
     spanGaps: true,
@@ -354,8 +354,8 @@ function createAnimatedChart(canvasId, legendContainerId, data, valueKey, tabId,
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      animation: { duration: 500, easing: "easeOutQuad" },
-      interaction: { mode: "index", intersect: false },
+      animation: { duration: 900, easing: "easeOutQuad" },
+      interaction: { mode: "nearest", intersect: true },
       scales: {
         x: { ticks: { color: "#93a3b3" }, grid: { color: "#2a3a48" } },
         y: { ticks: { color: "#93a3b3" }, grid: { color: "#2a3a48" }, title: { display: true, text: valueKey, color: "#93a3b3" } },
@@ -406,8 +406,8 @@ function createAnimatedChart(canvasId, legendContainerId, data, valueKey, tabId,
     markerEl.style.lineHeight = "1";
     markerEl.style.pointerEvents = "none";
     markerEl.style.zIndex = "10";
-    markerEl.style.transition = "left 0.6s ease, top 0.6s ease, opacity 0.3s ease";
-    markerEl.style.transform = "translate(-50%, -125%)";
+    markerEl.style.transition = "left 1.3s linear, top 1.3s linear, opacity 0.3s ease";
+    markerEl.style.transform = "translate(-50%, -85%)";
     markerEl.style.opacity = "0";
     markerEl.style.filter = "drop-shadow(0 1px 2px rgba(0,0,0,0.6))";
     wrapEl.appendChild(markerEl);
@@ -506,7 +506,7 @@ function wireHeroControls(controller) {
       slider.value = i;
       updateLabel(i);
       if (i >= controller.stageKeys.length) stopPlaying();
-    }, 700);
+    }, 1500);
   });
 
   resetBtn.addEventListener("click", () => {
