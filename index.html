@@ -243,6 +243,25 @@
   <div class="chart-wrap"><canvas id="chart-general"></canvas></div>
 </section>
 
+<!-- ======================= 2e GRAFIEK: SCORE PER ETAPPE (NIET-CUMULATIEF) ======================= -->
+<div class="secondary-title">Score per etappe (niet-cumulatief, ter vergelijking)</div>
+<div class="secondary-grid">
+  <div class="card" style="grid-column: 1 / -1;">
+    <h3>Hoeveel punten scoorde iedereen in elke losse etappe</h3>
+    <div class="controls">
+      <button class="play-btn" id="play-btn-daily">▶ Afspelen</button>
+      <button class="reset-btn" id="reset-btn-daily">⟲ Terug naar start</button>
+      <input type="range" id="day-slider-daily" min="0" max="0" value="0" step="1" />
+      <span class="day-label" id="day-label-daily">Etappe -</span>
+    </div>
+    <div class="legend-actions">
+      <a id="select-all-daily">Alles aan</a> · <a id="select-none-daily">Alles uit</a>
+    </div>
+    <div class="legend-toggle" id="legend-daily"></div>
+    <div class="chart-wrap" style="height: 320px;"><canvas id="chart-daily"></canvas></div>
+  </div>
+</div>
+
 <!-- ======================= BIJZAAK: OVERIGE KLASSEMENTEN ======================= -->
 <div class="secondary-title">Overige klassementen (bijzaak)</div>
 <div class="secondary-grid" id="secondary-classifications"></div>
@@ -317,20 +336,29 @@ function getStageKeysWithData(data) {
 }
 
 // -------- Animated / toggleable line chart component --------
-function createAnimatedChart(canvasId, legendContainerId, data, valueKey, tabId, showLeaderMarker = false) {
+function createAnimatedChart(canvasId, legendContainerId, data, valueKey, tabId, showLeaderMarker = false, cumulative = false) {
   const stageKeys = getStageKeysWithData(data);
   const slugs = Object.keys(colorMap);
 
-  // matrix[slug] = array van waarden (of null) per etappe
+  // matrix[slug] = array van waarden (of null) per etappe.
+  // "stage_results" geeft per etappe het puntenaantal van DIE etappe zelf
+  // (niet-cumulatief) - voor het algemeen klassement (dat een lopend
+  // totaal is) tellen we dat hier per deelnemer bij elkaar op.
   const matrix = {};
   slugs.forEach(slug => {
+    let running = 0;
     matrix[slug] = stageKeys.map(stageKey => {
       const rows = data.stage_results[stageKey] || [];
       const row = rows.find(r => r.participant_slug === slug);
       if (!row) return null;
       const raw = row[valueKey];
       const val = parseFloat(raw);
-      return isNaN(val) ? null : val;
+      if (isNaN(val)) return null;
+      if (cumulative) {
+        running += val;
+        return running;
+      }
+      return val;
     });
   });
 
@@ -469,13 +497,14 @@ function createAnimatedChart(canvasId, legendContainerId, data, valueKey, tabId,
 }
 
 // -------- Play / slider besturing voor de hoofdgrafiek --------
-function wireHeroControls(controller) {
-  const playBtn = document.getElementById("play-btn");
-  const resetBtn = document.getElementById("reset-btn");
-  const slider = document.getElementById("day-slider");
-  const dayLabel = document.getElementById("day-label");
-  const selectAll = document.getElementById("select-all");
-  const selectNone = document.getElementById("select-none");
+function wireHeroControls(controller, suffix = "") {
+  const playBtn = document.getElementById("play-btn" + suffix);
+  const resetBtn = document.getElementById("reset-btn" + suffix);
+  const slider = document.getElementById("day-slider" + suffix);
+  const dayLabel = document.getElementById("day-label" + suffix);
+  const selectAll = document.getElementById("select-all" + suffix);
+  const selectNone = document.getElementById("select-none" + suffix);
+  const legendId = suffix === "-daily" ? "legend-daily" : "legend-general";
 
   slider.max = controller.stageKeys.length;
   slider.value = controller.stageKeys.length;
@@ -524,7 +553,7 @@ function wireHeroControls(controller) {
   });
 
   selectAll.addEventListener("click", () => {
-    document.querySelectorAll("#legend-general .legend-item").forEach(item => {
+    document.querySelectorAll(`#${legendId} .legend-item`).forEach(item => {
       const idx = controller.chart.data.datasets.findIndex(d => d._slug === item.dataset.slug);
       controller.chart.getDatasetMeta(idx).hidden = false;
       item.classList.remove("disabled");
@@ -532,7 +561,7 @@ function wireHeroControls(controller) {
     controller.chart.update();
   });
   selectNone.addEventListener("click", () => {
-    document.querySelectorAll("#legend-general .legend-item").forEach(item => {
+    document.querySelectorAll(`#${legendId} .legend-item`).forEach(item => {
       const idx = controller.chart.data.datasets.findIndex(d => d._slug === item.dataset.slug);
       controller.chart.getDatasetMeta(idx).hidden = true;
       item.classList.add("disabled");
@@ -544,10 +573,14 @@ function wireHeroControls(controller) {
 // -------- Secundaire klassementen (Points / Mountain / Youth) --------
 function buildSecondaryClassifications(data) {
   const grid = document.getElementById("secondary-classifications");
+  // "Puntenklassement" en "Bergklassement" zijn zelf ook cumulatieve
+  // lopende totalen (net als het algemeen klassement), dus ook hier
+  // sommeren we de per-etappe bijdrage. Voor "Jongerenklassement" is er
+  // geen eigen kolom in de per-etappe brondata beschikbaar - die tonen we
+  // daarom als losse (niet-animerende) tabel met de huidige stand.
   const configs = [
-    { tabId: "points", valueKey: "Pts", label: "Puntenklassement" },
-    { tabId: "mountain", valueKey: "Pts", label: "Bergklassement" },
-    { tabId: "youth", valueKey: "Pts", label: "Jongerenklassement" },
+    { valueKey: "PC", label: "Puntenklassement (lopend totaal)" },
+    { valueKey: "MC", label: "Bergklassement (lopend totaal)" },
   ];
   configs.forEach((cfg, i) => {
     const canvasId = `chart-sec-${i}`;
@@ -558,8 +591,24 @@ function buildSecondaryClassifications(data) {
       <div class="legend-toggle" id="${legendId}" style="margin-bottom:6px;"></div>
       <div class="chart-wrap"><canvas id="${canvasId}"></canvas></div>`;
     grid.appendChild(card);
-    createAnimatedChart(canvasId, legendId, data, cfg.valueKey, cfg.tabId);
+    createAnimatedChart(canvasId, legendId, data, cfg.valueKey, null, false, true);
   });
+
+  // Jongerenklassement: huidige stand als tabel (geen per-etappe
+  // brondata beschikbaar om een betrouwbaar verloop te tekenen).
+  const youthRows = data.classifications.youth || [];
+  const youthCard = document.createElement("div");
+  youthCard.className = "card";
+  const youthCols = ["Participant", "PC", "MC", "GC", "T", "PP", "Pts"];
+  let youthHtml = `<h3>Jongerenklassement (huidige stand)</h3>
+    <div class="scroll-table"><table class="data-table">
+    <tr>${youthCols.map(c => `<th>${c}</th>`).join("")}</tr>`;
+  youthRows.forEach(r => {
+    youthHtml += `<tr>${youthCols.map(c => `<td>${r[c] ?? ""}</td>`).join("")}</tr>`;
+  });
+  youthHtml += "</table></div>";
+  youthCard.innerHTML = youthHtml;
+  grid.appendChild(youthCard);
 }
 
 // -------- Stage results tabel met tabs --------
@@ -629,8 +678,11 @@ function buildHistoryTable(rows) {
   document.getElementById("last-updated").textContent =
     "Laatst bijgewerkt: " + new Date(DATA.scraped_at_utc).toLocaleString("nl-NL");
 
-  const heroController = createAnimatedChart("chart-general", "legend-general", DATA, "Pts", "general", true);
+  const heroController = createAnimatedChart("chart-general", "legend-general", DATA, "Pts", "general", true, true);
   wireHeroControls(heroController);
+
+  const dailyController = createAnimatedChart("chart-daily", "legend-daily", DATA, "Pts", "general", false, false);
+  wireHeroControls(dailyController, "-daily");
 
   buildSecondaryClassifications(DATA);
   buildStageResultsTable(DATA);
