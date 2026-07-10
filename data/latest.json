@@ -1,65 +1,89 @@
 {
-  "scraped_at_utc": "2026-07-09T18:37:43.685229+00:00",
+  "scraped_at_utc": "2026-07-10T18:01:55.847550+00:00",
   "classifications": {
     "general": [
       {
         "Participant": "SexySeixas",
         "participant_slug": "sexyseixas",
-        "PC": "513",
+        "PC": "639",
         "MC": "161",
-        "GC": "207",
-        "T": "66",
+        "GC": "256",
+        "T": "69",
         "PP": "-",
         "EQ": "-",
-        "Pts": "947",
+        "Pts": "1125",
         "H2H": ""
       },
       {
         "Participant": "Belahu",
         "participant_slug": "belahu",
-        "PC": "526",
+        "PC": "642",
         "MC": "146",
-        "GC": "186",
-        "T": "66",
+        "GC": "235",
+        "T": "69",
         "PP": "-",
         "EQ": "-",
-        "Pts": "924",
+        "Pts": "1092",
         "H2H": ""
       },
       {
         "Participant": "Ko-fidis",
         "participant_slug": "ko-fidis",
-        "PC": "492",
+        "PC": "610",
         "MC": "150",
-        "GC": "160",
-        "T": "66",
+        "GC": "199",
+        "T": "69",
         "PP": "-",
         "EQ": "-",
-        "Pts": "868",
+        "Pts": "1028",
         "H2H": ""
       },
       {
-        "Participant": "Tour MondAIl",
-        "participant_slug": "tour-mondail",
-        "PC": "445",
-        "MC": "146",
-        "GC": "201",
-        "T": "66",
-        "PP": "-2",
+        "Participant": "Alegría",
+        "participant_slug": "alegría",
+        "PC": "634",
+        "MC": "91",
+        "GC": "166",
+        "T": "69",
+        "PP": "-",
         "EQ": "-",
-        "Pts": "856",
+        "Pts": "960",
         "H2H": ""
       },
       {
         "Participant": "Pan y aqua",
         "participant_slug": "pan-y-aqua",
-        "PC": "447",
+        "PC": "541",
         "MC": "140",
-        "GC": "159",
-        "T": "66",
+        "GC": "191",
+        "T": "69",
         "PP": "-",
         "EQ": "-",
-        "Pts": "812",
+        "Pts": "941",
+        "H2H": ""
+      },
+      {
+        "Participant": "Tour MondAIl",
+        "participant_slug": "tour-mondail",
+        "PC": "475",
+        "MC": "146",
+        "GC": "248",
+        "T": "69",
+        "PP": "-2",
+        "EQ": "-",
+        "Pts": "936",
+        "H2H": ""
+      },
+      {
+        "Participant": "Not_Kermit",
+        "participant_slug": "not_kermit",
+        "PC": "437",
+        "MC": "152",
+        "GC": "184",
+        "T": "69",
+        "PP": "-1",
+        "EQ": "-",
+        "Pts": "841",
         "H2H": ""
       },
       {
@@ -67,47 +91,23 @@
         "participant_slug": "yellow-bitch",
         "PC": "352",
         "MC": "167",
-        "GC": "204",
-        "T": "66",
+        "GC": "250",
+        "T": "69",
         "PP": "-",
         "EQ": "-",
-        "Pts": "789",
-        "H2H": ""
-      },
-      {
-        "Participant": "Alegría",
-        "participant_slug": "alegría",
-        "PC": "471",
-        "MC": "91",
-        "GC": "134",
-        "T": "66",
-        "PP": "-",
-        "EQ": "-",
-        "Pts": "762",
-        "H2H": ""
-      },
-      {
-        "Participant": "Not_Kermit",
-        "participant_slug": "not_kermit",
-        "PC": "358",
-        "MC": "152",
-        "GC": "150",
-        "T": "66",
-        "PP": "-1",
-        "EQ": "-",
-        "Pts": "725",
+        "Pts": "838",
         "H2H": ""
       },
       {
         "Participant": "Immer geradeaus",
         "participant_slug": "immer-geradeaus",
-        "PC": "364",
+        "PC": "442",
         "MC": "118",
-        "GC": "159",
-        "T": "49",
+        "GC": "195",
+        "T": "51",
         "PP": "-1",
         "EQ": "-",
-        "Pts": "689",
+        "Pts": "805",
         "H2H": ""
       }
     ],
@@ -115,97 +115,97 @@
       {
         "Participant": "Belahu",
         "participant_slug": "belahu",
-        "F": "108",
+        "F": "189",
         "MT": "112",
         "M": "131",
-        "IS": "140",
-        "Y": "35",
+        "IS": "174",
+        "Y": "36",
         "PP": "-",
-        "Pts": "526",
+        "Pts": "642",
         "H2H": ""
       },
       {
         "Participant": "SexySeixas",
         "participant_slug": "sexyseixas",
-        "F": "101",
+        "F": "205",
         "MT": "118",
         "M": "191",
-        "IS": "71",
-        "Y": "32",
+        "IS": "90",
+        "Y": "35",
         "PP": "-",
-        "Pts": "513",
-        "H2H": ""
-      },
-      {
-        "Participant": "Ko-fidis",
-        "participant_slug": "ko-fidis",
-        "F": "126",
-        "MT": "99",
-        "M": "141",
-        "IS": "109",
-        "Y": "17",
-        "PP": "-",
-        "Pts": "492",
+        "Pts": "639",
         "H2H": ""
       },
       {
         "Participant": "Alegría",
         "participant_slug": "alegría",
-        "F": "150",
+        "F": "275",
         "MT": "90",
         "M": "78",
-        "IS": "132",
-        "Y": "21",
+        "IS": "166",
+        "Y": "25",
         "PP": "-",
-        "Pts": "471",
+        "Pts": "634",
+        "H2H": ""
+      },
+      {
+        "Participant": "Ko-fidis",
+        "participant_slug": "ko-fidis",
+        "F": "211",
+        "MT": "99",
+        "M": "141",
+        "IS": "141",
+        "Y": "18",
+        "PP": "-",
+        "Pts": "610",
         "H2H": ""
       },
       {
         "Participant": "Pan y aqua",
         "participant_slug": "pan-y-aqua",
-        "F": "109",
+        "F": "179",
         "MT": "104",
         "M": "115",
-        "IS": "96",
-        "Y": "23",
+        "IS": "117",
+        "Y": "26",
         "PP": "-",
-        "Pts": "447",
+        "Pts": "541",
         "H2H": ""
       },
       {
         "Participant": "Tour MondAIl",
         "participant_slug": "tour-mondail",
-        "F": "33",
+        "F": "50",
         "MT": "143",
         "M": "153",
-        "IS": "86",
+        "IS": "99",
         "Y": "30",
         "PP": "-",
-        "Pts": "445",
+        "Pts": "475",
         "H2H": ""
       },
       {
         "Participant": "Immer geradeaus",
         "participant_slug": "immer-geradeaus",
-        "F": "59",
+        "F": "111",
         "MT": "82",
         "M": "110",
-        "IS": "111",
+        "IS": "137",
         "Y": "2",
         "PP": "-",
-        "Pts": "364",
+        "Pts": "442",
         "H2H": ""
       },
       {
         "Participant": "Not_Kermit",
         "participant_slug": "not_kermit",
-        "F": "57",
+        "F": "115",
         "MT": "91",
         "M": "114",
-        "IS": "91",
+        "IS": "112",
         "Y": "5",
         "PP": "-",
-        "Pts": "358",
+        "Pts": "437",
         "H2H": ""
       },
       {
@@ -335,64 +335,64 @@
       {
         "Participant": "SexySeixas",
         "participant_slug": "sexyseixas",
-        "Y": "32",
-        "IY": "25",
+        "Y": "35",
+        "IY": "31",
         "PP": "-",
-        "Pts": "57",
+        "Pts": "66",
         "H2H": ""
       },
       {
         "Participant": "Yellow bitch",
         "participant_slug": "yellow-bitch",
         "Y": "29",
-        "IY": "25",
+        "IY": "31",
         "PP": "-",
-        "Pts": "54",
+        "Pts": "60",
         "H2H": ""
       },
       {
         "Participant": "Belahu",
         "participant_slug": "belahu",
-        "Y": "35",
-        "IY": "16",
+        "Y": "36",
+        "IY": "20",
         "PP": "-",
-        "Pts": "51",
+        "Pts": "56",
         "H2H": ""
       },
       {
         "Participant": "Tour MondAIl",
         "participant_slug": "tour-mondail",
         "Y": "30",
-        "IY": "16",
+        "IY": "20",
         "PP": "-",
-        "Pts": "46",
+        "Pts": "50",
         "H2H": ""
       },
       {
         "Participant": "Alegría",
         "participant_slug": "alegría",
-        "Y": "21",
-        "IY": "13",
+        "Y": "25",
+        "IY": "16",
         "PP": "-",
-        "Pts": "34",
+        "Pts": "41",
         "H2H": ""
       },
       {
         "Participant": "Pan y aqua",
         "participant_slug": "pan-y-aqua",
-        "Y": "23",
-        "IY": "9",
+        "Y": "26",
+        "IY": "10",
         "PP": "-",
-        "Pts": "32",
+        "Pts": "36",
         "H2H": ""
       },
       {
         "Participant": "Ko-fidis",
         "participant_slug": "ko-fidis",
-        "Y": "17",
-        "IY": "3",
+        "Y": "18",
+        "IY": "4",
         "PP": "-",
-        "Pts": "20",
+        "Pts": "22",
         "H2H": ""
       },
       {
@@ -968,7 +968,98 @@
         "Pts": "190"
       }
     ],
-    "Stage 7": [],
+    "Stage 7": [
+      {
+        "Participant": "Alegría",
+        "participant_slug": "alegría",
+        "PC": "163",
+        "MC": "-",
+        "GC": "32",
+        "T": "3",
+        "PP": "-",
+        "Pts": "198"
+      },
+      {
+        "Participant": "SexySeixas",
+        "participant_slug": "sexyseixas",
+        "PC": "126",
+        "MC": "-",
+        "GC": "49",
+        "T": "3",
+        "PP": "-",
+        "Pts": "178"
+      },
+      {
+        "Participant": "Belahu",
+        "participant_slug": "belahu",
+        "PC": "116",
+        "MC": "-",
+        "GC": "49",
+        "T": "3",
+        "PP": "-",
+        "Pts": "168"
+      },
+      {
+        "Participant": "Ko-fidis",
+        "participant_slug": "ko-fidis",
+        "PC": "118",
+        "MC": "-",
+        "GC": "39",
+        "T": "3",
+        "PP": "-",
+        "Pts": "160"
+      },
+      {
+        "Participant": "Pan y aqua",
+        "participant_slug": "pan-y-aqua",
+        "PC": "94",
+        "MC": "-",
+        "GC": "32",
+        "T": "3",
+        "PP": "-",
+        "Pts": "129"
+      },
+      {
+        "Participant": "Immer geradeaus",
+        "participant_slug": "immer-geradeaus",
+        "PC": "78",
+        "MC": "-",
+        "GC": "36",
+        "T": "2",
+        "PP": "-",
+        "Pts": "116"
+      },
+      {
+        "Participant": "Not_Kermit",
+        "participant_slug": "not_kermit",
+        "PC": "79",
+        "MC": "-",
+        "GC": "34",
+        "T": "3",
+        "PP": "-",
+        "Pts": "116"
+      },
+      {
+        "Participant": "Tour MondAIl",
+        "participant_slug": "tour-mondail",
+        "PC": "30",
+        "MC": "-",
+        "GC": "47",
+        "T": "3",
+        "PP": "-",
+        "Pts": "80"
+      },
+      {
+        "Participant": "Yellow bitch",
+        "participant_slug": "yellow-bitch",
+        "PC": "-",
+        "MC": "-",
+        "GC": "46",
+        "T": "3",
+        "PP": "-",
+        "Pts": "49"
+      }
+    ],
     "Stage 8": [],
     "Stage 9": [],
     "Stage 10": [],
@@ -993,7 +1084,7 @@
       "times_picked": "9",
       "percentage": "100.0",
       "H2H": "",
-      "Pts": "189"
+      "Pts": "204"
     },
     {
       "Rider": "Vingegaard, Jonas",
@@ -1003,7 +1094,7 @@
       "times_picked": "8",
       "percentage": "88.9",
       "H2H": "",
-      "Pts": "146"
+      "Pts": "158"
     },
     {
       "Rider": "Evenepoel, Remco",
@@ -1013,7 +1104,7 @@
       "times_picked": "6",
       "percentage": "66.7",
       "H2H": "",
-      "Pts": "79"
+      "Pts": "83"
     },
     {
       "Rider": "Merlier, Tim",
@@ -1023,7 +1114,7 @@
       "times_picked": "6",
       "percentage": "66.7",
       "H2H": "",
-      "Pts": "41"
+      "Pts": "87"
     },
     {
       "Rider": "Philipsen, Jasper",
@@ -1033,7 +1124,7 @@
       "times_picked": "6",
       "percentage": "66.7",
       "H2H": "",
-      "Pts": "73"
+      "Pts": "106"
     },
     {
       "Rider": "Seixas, Paul",
@@ -1043,7 +1134,7 @@
       "times_picked": "6",
       "percentage": "66.7",
       "H2H": "",
-      "Pts": "75"
+      "Pts": "77"
     },
     {
       "Rider": "Carapaz, Richard",
@@ -1063,7 +1154,7 @@
       "times_picked": "5",
       "percentage": "55.6",
       "H2H": "",
-      "Pts": "112"
+      "Pts": "121"
     },
     {
       "Rider": "Wellens, Tim",
@@ -1083,7 +1174,7 @@
       "times_picked": "4",
       "percentage": "44.4",
       "H2H": "",
-      "Pts": "41"
+      "Pts": "45"
     },
     {
       "Rider": "Poel, Mathieu van der",
@@ -1093,7 +1184,7 @@
       "times_picked": "4",
       "percentage": "44.4",
       "H2H": "",
-      "Pts": "-"
+      "Pts": "3"
     },
     {
       "Rider": "Van Gils, Maxim",
@@ -1143,7 +1234,7 @@
       "times_picked": "3",
       "percentage": "33.3",
       "H2H": "",
-      "Pts": "132"
+      "Pts": "167"
     },
     {
       "Rider": "Pidcock, Tom",
@@ -1163,7 +1254,7 @@
       "times_picked": "2",
       "percentage": "22.2",
       "H2H": "",
-      "Pts": "14"
+      "Pts": "28"
     },
     {
       "Rider": "Ayuso, Juan",
@@ -1173,7 +1264,7 @@
       "times_picked": "2",
       "percentage": "22.2",
       "H2H": "",
-      "Pts": "48"
+      "Pts": "52"
     },
     {
       "Rider": "Barguil, Warren",
@@ -1193,7 +1284,7 @@
       "times_picked": "2",
       "percentage": "22.2",
       "H2H": "",
-      "Pts": "8"
+      "Pts": "28"
     },
     {
       "Rider": "Campenaerts, Victor",
@@ -1223,7 +1314,7 @@
       "times_picked": "2",
       "percentage": "22.2",
       "H2H": "",
-      "Pts": "21"
+      "Pts": "37"
     },
     {
       "Rider": "Ganna, Filippo",
@@ -1243,7 +1334,7 @@
       "times_picked": "2",
       "percentage": "22.2",
       "H2H": "",
-      "Pts": "77"
+      "Pts": "119"
     },
     {
       "Rider": "Healy, Ben",
@@ -1313,7 +1404,7 @@
       "times_picked": "1",
       "percentage": "11.1",
       "H2H": "",
-      "Pts": "17"
+      "Pts": "28"
     },
     {
       "Rider": "Berg, Julius van den",
@@ -1393,7 +1484,7 @@
       "times_picked": "1",
       "percentage": "11.1",
       "H2H": "",
-      "Pts": "71"
+      "Pts": "109"
     },
     {
       "Rider": "Kleijn, Arvid de",
@@ -1463,7 +1554,7 @@
       "times_picked": "1",
       "percentage": "11.1",
       "H2H": "",
-      "Pts": "13"
+      "Pts": "21"
     },
     {
       "Rider": "Tiberi, Antonio",
@@ -1552,90 +1643,110 @@
       "rider_url": "https://www.worldcyclingstats.com/en/rider/tadej-pogacar/2026",
       "Team": "UAD",
       "Stars": "",
-      "Pts": "189",
+      "Pts": "204",
       "H2H": "",
       "times_picked": "9",
       "percentage": "100.0"
-    },
-    {
-      "Rider": "Vingegaard, Jonas",
-      "rider_url": "https://www.worldcyclingstats.com/en/rider/jonas-vingegaard-rasmussen/2026",
-      "Team": "TVL",
-      "Stars": "",
-      "Pts": "146",
-      "H2H": "",
-      "times_picked": "8",
-      "percentage": "88.9"
     },
     {
       "Rider": "Pedersen, Mads",
       "rider_url": "https://www.worldcyclingstats.com/en/rider/mads-pedersen/2026",
       "Team": "LTK",
       "Stars": "",
-      "Pts": "132",
+      "Pts": "167",
       "H2H": "",
       "times_picked": "3",
       "percentage": "33.3"
+    },
+    {
+      "Rider": "Vingegaard, Jonas",
+      "rider_url": "https://www.worldcyclingstats.com/en/rider/jonas-vingegaard-rasmussen/2026",
+      "Team": "TVL",
+      "Stars": "",
+      "Pts": "158",
+      "H2H": "",
+      "times_picked": "8",
+      "percentage": "88.9"
     },
     {
       "Rider": "Del Toro, Isaac",
       "rider_url": "https://www.worldcyclingstats.com/en/rider/isaac-del-toro/2026",
       "Team": "UAD",
       "Stars": "",
-      "Pts": "112",
+      "Pts": "121",
       "H2H": "",
       "times_picked": "5",
       "percentage": "55.6"
-    },
-    {
-      "Rider": "Evenepoel, Remco",
-      "rider_url": "https://www.worldcyclingstats.com/en/rider/remco-evenepoel/2026",
-      "Team": "RBH",
-      "Stars": "",
-      "Pts": "79",
-      "H2H": "",
-      "times_picked": "6",
-      "percentage": "66.7"
     },
     {
       "Rider": "Girmay, Biniam",
       "rider_url": "https://www.worldcyclingstats.com/en/rider/biniam-girmay/2026",
       "Team": "NSN",
       "Stars": "",
-      "Pts": "77",
+      "Pts": "119",
       "H2H": "",
       "times_picked": "2",
       "percentage": "22.2"
-    },
-    {
-      "Rider": "Seixas, Paul",
-      "rider_url": "https://www.worldcyclingstats.com/en/rider/paul-seixas/2026",
-      "Team": "DCT",
-      "Stars": "",
-      "Pts": "75",
-      "H2H": "",
-      "times_picked": "6",
-      "percentage": "66.7"
-    },
-    {
-      "Rider": "Philipsen, Jasper",
-      "rider_url": "https://www.worldcyclingstats.com/en/rider/jasper-philipsen/2026",
-      "Team": "APT",
-      "Stars": "",
-      "Pts": "73",
-      "H2H": "",
-      "times_picked": "6",
-      "percentage": "66.7"
     },
     {
       "Rider": "Kanter, Max",
       "rider_url": "https://www.worldcyclingstats.com/en/rider/max-kanter/2026",
       "Team": "XAT",
       "Stars": "",
-      "Pts": "71",
+      "Pts": "109",
       "H2H": "",
       "times_picked": "1",
       "percentage": "11.1"
+    },
+    {
+      "Rider": "Philipsen, Jasper",
+      "rider_url": "https://www.worldcyclingstats.com/en/rider/jasper-philipsen/2026",
+      "Team": "APT",
+      "Stars": "",
+      "Pts": "106",
+      "H2H": "",
+      "times_picked": "6",
+      "percentage": "66.7"
+    },
+    {
+      "Rider": "Merlier, Tim",
+      "rider_url": "https://www.worldcyclingstats.com/en/rider/tim-merlier/2026",
+      "Team": "SOQ",
+      "Stars": "",
+      "Pts": "87",
+      "H2H": "",
+      "times_picked": "6",
+      "percentage": "66.7"
+    },
+    {
+      "Rider": "Evenepoel, Remco",
+      "rider_url": "https://www.worldcyclingstats.com/en/rider/remco-evenepoel/2026",
+      "Team": "RBH",
+      "Stars": "",
+      "Pts": "83",
+      "H2H": "",
+      "times_picked": "6",
+      "percentage": "66.7"
+    },
+    {
+      "Rider": "Seixas, Paul",
+      "rider_url": "https://www.worldcyclingstats.com/en/rider/paul-seixas/2026",
+      "Team": "DCT",
+      "Stars": "",
+      "Pts": "77",
+      "H2H": "",
+      "times_picked": "6",
+      "percentage": "66.7"
+    },
+    {
+      "Rider": "Ayuso, Juan",
+      "rider_url": "https://www.worldcyclingstats.com/en/rider/juan-ayuso/2026",
+      "Team": "LTK",
+      "Stars": "",
+      "Pts": "52",
+      "H2H": "",
+      "times_picked": "2",
+      "percentage": "22.2"
     },
     {
       "Rider": "Simmons, Quinn",
@@ -1643,16 +1754,6 @@
       "Team": "LTK",
       "Stars": "",
       "Pts": "51",
-      "H2H": "",
-      "times_picked": "2",
-      "percentage": "22.2"
-    },
-    {
-      "Rider": "Ayuso, Juan",
-      "rider_url": "https://www.worldcyclingstats.com/en/rider/juan-ayuso/2026",
-      "Team": "LTK",
-      "Stars": "",
-      "Pts": "48",
       "H2H": "",
       "times_picked": "2",
       "percentage": "22.2"
@@ -1672,20 +1773,10 @@
       "rider_url": "https://www.worldcyclingstats.com/en/rider/olav-kooij/2026",
       "Team": "DCT",
       "Stars": "",
-      "Pts": "41",
+      "Pts": "45",
       "H2H": "",
       "times_picked": "4",
       "percentage": "44.4"
-    },
-    {
-      "Rider": "Merlier, Tim",
-      "rider_url": "https://www.worldcyclingstats.com/en/rider/tim-merlier/2026",
-      "Team": "SOQ",
-      "Stars": "",
-      "Pts": "41",
-      "H2H": "",
-      "times_picked": "6",
-      "percentage": "66.7"
     },
     {
       "Rider": "Lipowitz, Florian",
@@ -1698,11 +1789,51 @@
       "percentage": "33.3"
     },
     {
+      "Rider": "Fretin, Milan",
+      "rider_url": "https://www.worldcyclingstats.com/en/rider/milan-fretin/2026",
+      "Team": "COF",
+      "Stars": "",
+      "Pts": "37",
+      "H2H": "",
+      "times_picked": "2",
+      "percentage": "22.2"
+    },
+    {
       "Rider": "Castrillo, Pablo",
       "rider_url": "https://www.worldcyclingstats.com/en/rider/pablo-castrillo/2026",
       "Team": "MOV",
       "Stars": "",
       "Pts": "33",
+      "H2H": "",
+      "times_picked": "1",
+      "percentage": "11.1"
+    },
+    {
+      "Rider": "Ackermann, Pascal",
+      "rider_url": "https://www.worldcyclingstats.com/en/rider/pascal-ackermann/2026",
+      "Team": "JAY",
+      "Stars": "",
+      "Pts": "28",
+      "H2H": "",
+      "times_picked": "2",
+      "percentage": "22.2"
+    },
+    {
+      "Rider": "Bauhaus, Phil",
+      "rider_url": "https://www.worldcyclingstats.com/en/rider/phil-bauhaus/2026",
+      "Team": "TBV",
+      "Stars": "",
+      "Pts": "28",
+      "H2H": "",
+      "times_picked": "2",
+      "percentage": "22.2"
+    },
+    {
+      "Rider": "Berckmoes, Jenno",
+      "rider_url": "https://www.worldcyclingstats.com/en/rider/jenno-berckmoes/2026",
+      "Team": "LOI",
+      "Stars": "",
+      "Pts": "28",
       "H2H": "",
       "times_picked": "1",
       "percentage": "11.1"
@@ -1748,34 +1879,14 @@
       "percentage": "11.1"
     },
     {
-      "Rider": "Fretin, Milan",
-      "rider_url": "https://www.worldcyclingstats.com/en/rider/milan-fretin/2026",
-      "Team": "COF",
+      "Rider": "Teunissen, Mike",
+      "rider_url": "https://www.worldcyclingstats.com/en/rider/mike-teunissen/2026",
+      "Team": "XAT",
       "Stars": "",
       "Pts": "21",
       "H2H": "",
-      "times_picked": "2",
-      "percentage": "22.2"
-    },
-    {
-      "Rider": "Berckmoes, Jenno",
-      "rider_url": "https://www.worldcyclingstats.com/en/rider/jenno-berckmoes/2026",
-      "Team": "LOI",
-      "Stars": "",
-      "Pts": "17",
-      "H2H": "",
       "times_picked": "1",
       "percentage": "11.1"
-    },
-    {
-      "Rider": "Ackermann, Pascal",
-      "rider_url": "https://www.worldcyclingstats.com/en/rider/pascal-ackermann/2026",
-      "Team": "JAY",
-      "Stars": "",
-      "Pts": "14",
-      "H2H": "",
-      "times_picked": "2",
-      "percentage": "22.2"
     },
     {
       "Rider": "Campenaerts, Victor",
@@ -1803,16 +1914,6 @@
       "Team": "SOQ",
       "Stars": "",
       "Pts": "14",
-      "H2H": "",
-      "times_picked": "1",
-      "percentage": "11.1"
-    },
-    {
-      "Rider": "Teunissen, Mike",
-      "rider_url": "https://www.worldcyclingstats.com/en/rider/mike-teunissen/2026",
-      "Team": "XAT",
-      "Stars": "",
-      "Pts": "13",
       "H2H": "",
       "times_picked": "1",
       "percentage": "11.1"
@@ -1846,16 +1947,6 @@
       "H2H": "",
       "times_picked": "1",
       "percentage": "11.1"
-    },
-    {
-      "Rider": "Bauhaus, Phil",
-      "rider_url": "https://www.worldcyclingstats.com/en/rider/phil-bauhaus/2026",
-      "Team": "TBV",
-      "Stars": "",
-      "Pts": "8",
-      "H2H": "",
-      "times_picked": "2",
-      "percentage": "22.2"
     },
     {
       "Rider": "O'Connor, Ben",
@@ -1906,6 +1997,16 @@
       "H2H": "",
       "times_picked": "1",
       "percentage": "11.1"
+    },
+    {
+      "Rider": "Poel, Mathieu van der",
+      "rider_url": "https://www.worldcyclingstats.com/en/rider/mathieu-van-der-poel/2026",
+      "Team": "APT",
+      "Stars": "",
+      "Pts": "3",
+      "H2H": "",
+      "times_picked": "4",
+      "percentage": "44.4"
     },
     {
       "Rider": "Arensman, Thymen",
